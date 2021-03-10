@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.graddex.graddex.models.PokemonResponse
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -38,14 +39,15 @@ class MainActivity : AppCompatActivity() {
         // Initialise rest client with cache and implement a JSON adapter
         val cache = Cache(File(application.cacheDir, "http_cache"),
                 50L * 1024L * 1024L)
-        val client = OkHttpClient.Builder().cache(cache).build()
+        val client = OkHttpClient.Builder()
+                .cache(cache)
+                .addInterceptor(ChuckerInterceptor(this))
+                .build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonResponse> = moshi.adapter(PokemonResponse::class.java)
 
         // Build the request for a cache valid for 30 minutes
         val request = Request.Builder()
-                .cacheControl(
-                        CacheControl.Builder().maxStale(30, TimeUnit.MINUTES).build())
                 .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
                 .build()
 
