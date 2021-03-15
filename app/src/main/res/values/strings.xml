@@ -3,4 +3,6 @@
     <string name="hello_world">Hello World, this is a pokemon app</string>
     <string name="loading">Loading...</string>
     <string name="error">There was an issue downloading the list</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

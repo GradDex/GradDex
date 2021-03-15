@@ -29,8 +29,9 @@ class PokemonRecyclerAdapter
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_pokemon, parent, false)
+        val view = LayoutInflater
+            .from(parent.context)
+            .inflate(R.layout.list_item_pokemon, parent, false)
 
         return PokemonViewHolder(view)
     }
@@ -47,5 +48,8 @@ class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: PokemonResponse_Result) {
         pokemonNameText.text = item.name
         pokemonUrlNameText.text = item.url
+        itemView.setOnClickListener {
+            val pokemonDetailsFragment = PokemonDetailsFragment(item.url)
+        }
     }
 }
