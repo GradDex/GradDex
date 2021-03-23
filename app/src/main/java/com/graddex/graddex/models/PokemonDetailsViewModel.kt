@@ -11,7 +11,9 @@ import java.io.IOException
 
 class PokemonDetailsViewModel : ViewModel() {
 
-    val pokemonDetails: MutableLiveData<PokemonDetailsResponse> = MutableLiveData()
+    val pokemonName: MutableLiveData<String> = MutableLiveData()
+    val pokemonType: MutableLiveData<String> = MutableLiveData()
+    val pokemonSpriteFront: MutableLiveData<String> = MutableLiveData()
 
     fun syncPokemonDetails(url: String) {
 
@@ -38,8 +40,11 @@ class PokemonDetailsViewModel : ViewModel() {
                 val body = response.body?.string()
                 Log.d(tag,"Body: $body")
                 val detailsRes = adapter.fromJson(body ?: "")
-                Log.d(tag, "detailsRes: ${detailsRes?.types}")
-                pokemonDetails.postValue(detailsRes)
+                Log.d(tag, "detailsRes: $detailsRes")
+                pokemonName.postValue(detailsRes?.name)
+                Log.d(tag, "PokemonType: ${detailsRes!!.types[0].type}")
+                pokemonType.postValue(detailsRes!!.types[0].type.name)
+                pokemonSpriteFront.postValue(detailsRes!!.sprites.front_default)
             }
         })
     }

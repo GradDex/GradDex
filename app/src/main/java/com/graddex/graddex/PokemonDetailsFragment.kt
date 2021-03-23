@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import coil.load
 import com.graddex.graddex.models.PokemonDetailsViewModel
 import com.graddex.graddex.databinding.FragmentPokemonDetailsBinding
 import com.graddex.graddex.models.PokemonDetailsResponse
@@ -19,34 +20,43 @@ private val pokemonKey: String = "pokemonKey"
 class PokemonDetailsFragment(args: Bundle) : Fragment() {
 
     constructor(id: String) : this(bundleOf(pokemonKey to id))
+
     private val pokemonId: String = args.getString(pokemonKey, "")
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         Log.d(tag, "PokemonID: $pokemonId")
 
         // Inflate the Pokemon Details fragment layout
         val binding = DataBindingUtil.inflate<FragmentPokemonDetailsBinding>(
-                inflater, R.layout.fragment_pokemon_details, container, false
+            inflater, R.layout.fragment_pokemon_details, container, false
         )
 
         // Call the Pokemon Details view model for specified Pokemon ID
         val viewModel: PokemonDetailsViewModel = ViewModelProvider(this)
-                .get(PokemonDetailsViewModel::class.java)
+            .get(PokemonDetailsViewModel::class.java)
 
         binding.statusText.text = getString(R.string.loading)
         viewModel.syncPokemonDetails(pokemonId)
-        viewModel.pokemonDetails.observe(viewLifecycleOwner,
-            { pokemonDetails ->
+        viewModel.pokemonName.observe(viewLifecycleOwner,
+            { pokemonName ->
                 binding.statusText.visibility = View.GONE
                 binding.pokemonName.visibility = View.VISIBLE
-                Log.d(tag, "pokemonDetails: $pokemonDetails")
-                binding.pokemonName.text = pokemonDetails.name
-                //binding.pokemonImage.visibility = View.VISIBLE
+                binding.pokemonName.text = pokemonName.toString()
             })
-
+        viewModel.pokemonType.observe(viewLifecycleOwner,
+            { pokemonType ->
+                binding.pokemonType.visibility = View.VISIBLE
+                binding.pokemonType.text = pokemonType
+            })
+        viewModel.pokemonSpriteFront.observe(viewLifecycleOwner,
+            { pokemonSpriteFront ->
+                binding.pokemonImage.visibility = View.VISIBLE
+                binding.pokemonImage.load(pokemonSpriteFront)
+            })
         return binding.root
 
     }

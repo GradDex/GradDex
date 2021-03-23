@@ -8,6 +8,10 @@ data class PokemonTypes(
     val slot: Int, val type: PokemonType
 )
 
+data class PokemonSprites(
+    val back_default: String, val front_default: String
+)
+
 data class PokemonDetailsResponse(
-    val name: String, val types: List<PokemonTypes>
+    val name: String, val types: List<PokemonTypes>, val sprites: PokemonSprites
 )
