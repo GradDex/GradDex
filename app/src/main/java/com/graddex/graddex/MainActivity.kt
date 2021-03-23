@@ -5,27 +5,26 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.graddex.graddex.models.PokemonResponse
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
+import java.io.File
 import java.io.IOException
-
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG = "test"
+    val tag = "PokeAPI"
 
     private lateinit var statusText: TextView
     private lateinit var pokemonRecyclerView: RecyclerView
 
     private lateinit var pokemonAdapter: PokemonRecyclerAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,40 +35,47 @@ class MainActivity : AppCompatActivity() {
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
         pokemonAdapter = PokemonRecyclerAdapter()
         pokemonRecyclerView.adapter = pokemonAdapter
-    }
 
-
-    override fun onResume() {
-        super.onResume()
-
-        //get an instance of the client
-        val client = OkHttpClient()
+        // Initialise rest client with cache and implement a JSON adapter
+        val cache = Cache(File(application.cacheDir, "http_cache"),
+                50L * 1024L * 1024L)
+        val client = OkHttpClient.Builder()
+                .cache(cache)
+                .addInterceptor(ChuckerInterceptor(this))
+                .build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonResponse> = moshi.adapter(PokemonResponse::class.java)
 
-
-        //build the request
+        // Build the request for a cache valid for 30 minutes
         val request = Request.Builder()
-            .cacheControl(CacheControl.Builder().noCache().build())
-            .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-            .build()
+                .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
+                .build()
 
-        statusText.text = "Loading.."
-        //execute
+        // Execute the request
+        statusText.text = getString(R.string.loading)
+        Log.d(tag, "Connecting to PokeAPI")
         client.newCall(request).enqueue(object : Callback {
+            // If request fails to get a response
             override fun onFailure(call: Call, e: IOException) {
+                // Logging details
+                Log.d(tag, "Connection to PokeAPI failed")
+
+                // Update UI to show error text
                 runOnUiThread {
-                    statusText.text = "Error"
+                    statusText.text = getString(R.string.error)
                 }
             }
 
+            // If request successfully gets a response
             override fun onResponse(call: Call, response: Response) {
-                Log.d(TAG, "onResponse: ${response.code}")
+                // Logging details
+                Log.d(tag, "onResponse: ${response.code}")
                 val body = response.body?.string()
-                Log.d(TAG, "onResponse: $body")
+                Log.d(tag, "onResponse: $body")
                 val res: PokemonResponse? = adapter.fromJson(body ?: "")
-                Log.d(TAG, "onResponse: ${res!!.results[0]}")
+                Log.d(tag, "onResponse: ${res!!.results[0]}")
 
+                // Update UI to remove the status text and show obtained list of Pokemon
                 runOnUiThread {
                     statusText.visibility = View.GONE
                     pokemonRecyclerView.visibility = View.VISIBLE
@@ -79,20 +85,4 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    /**
-    fun run() {
-    val request = Request.Builder()
-    .cacheControl(CacheControl.Builder().noCache().build())
-    .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-    .build()
-
-    client.newCall(request).execute().use { response ->
-    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-    for ((name, value) in response.headers) {
-    println("$name: $value")
-    }
-
-    println(response.body!!.string())
-    } */
 }
