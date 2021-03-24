@@ -11,9 +11,11 @@ import java.io.IOException
 
 class PokemonDetailsViewModel : ViewModel() {
 
-    val pokemonName: MutableLiveData<String> = MutableLiveData()
-    val pokemonType: MutableLiveData<String> = MutableLiveData()
     val pokemonSpriteFront: MutableLiveData<String> = MutableLiveData()
+    val pokemonSpriteBack: MutableLiveData<String> = MutableLiveData()
+    val pokemonName: MutableLiveData<String> = MutableLiveData()
+    val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
+    val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
 
     fun syncPokemonDetails(url: String) {
 
@@ -23,7 +25,8 @@ class PokemonDetailsViewModel : ViewModel() {
         val client = OkHttpClient()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonDetailsResponse> = moshi.adapter(
-                PokemonDetailsResponse::class.java)
+            PokemonDetailsResponse::class.java
+        )
 
         // Build the request
         val request = Request.Builder().url(url).build()
@@ -38,13 +41,14 @@ class PokemonDetailsViewModel : ViewModel() {
             override fun onResponse(call: Call, response: Response) {
                 Log.d(tag, "Response: $response")
                 val body = response.body?.string()
-                Log.d(tag,"Body: $body")
+                Log.d(tag, "Body: $body")
                 val detailsRes = adapter.fromJson(body ?: "")
                 Log.d(tag, "detailsRes: $detailsRes")
-                pokemonName.postValue(detailsRes?.name)
-                Log.d(tag, "PokemonType: ${detailsRes!!.types[0].type}")
-                pokemonType.postValue(detailsRes!!.types[0].type.name)
                 pokemonSpriteFront.postValue(detailsRes!!.sprites.front_default)
+                pokemonSpriteBack.postValue(detailsRes.sprites.back_default)
+                pokemonName.postValue(detailsRes.name)
+                pokemonTypes.postValue(detailsRes.types)
+                pokemonAbilities.postValue(detailsRes.abilities)
             }
         })
     }

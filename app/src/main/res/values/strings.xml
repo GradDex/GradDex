@@ -6,4 +6,6 @@
     <string name="error_details">There was an issue downloading this Pokemon\'s details</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="abilities">Abilities:</string>
+    <string name="ability">Ability:</string>
 </resources>

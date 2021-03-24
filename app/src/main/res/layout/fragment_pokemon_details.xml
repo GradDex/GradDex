@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/purple_200">
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/status_text"
@@ -20,45 +20,67 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/pokemon_image"
+            android:id="@+id/pokemon_front_image"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginTop="16dp"
             android:importantForAccessibility="no"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/pokemon_back_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/pokemon_back_image"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pokemon_front_image"
+            app:layout_constraintTop_toTopOf="@id/pokemon_front_image" />
+
 
         <TextView
             android:id="@+id/pokemon_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="@id/pokemon_image"
-            app:layout_constraintStart_toStartOf="@id/pokemon_image"
-            app:layout_constraintTop_toBottomOf="@id/pokemon_image"
-            tools:text="This is a Pokemon name!" />
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_front_image"
+            tools:text="This is the Pokemon!" />
 
         <TextView
-            android:id="@+id/pokemon_type"
+            android:id="@+id/pokemon_types"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pokemon_name"
-            tools:text="This is the Pokemon's type!" />
-        <!--
-                <ListView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/pokemon_name"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/list_pokemon_types"
-                    tools:visibility="visible" />
-        -->
+            tools:text="This is the Pokemon's type(s)" />
+
+        <TextView
+            android:id="@+id/pokemon_abilities_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_types"
+            tools:text="Ability/Abilities" />
+
+        <TextView
+            android:id="@+id/pokemon_abilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_abilities_header"
+            tools:text="Ability 1, Ability 2, Ability 3..." />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
