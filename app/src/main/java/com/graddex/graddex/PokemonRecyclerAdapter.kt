@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.graddex.graddex.models.PokemonResponse_Result
 
-class PokemonRecyclerAdapter(val listener: OnPokemonClicked)
+class PokemonRecyclerAdapter(val listener: (String) -> Unit)
     : ListAdapter<PokemonResponse_Result, PokemonRecyclerAdapter.PokemonViewHolder>(
         object : DiffUtil.ItemCallback<PokemonResponse_Result>() {
             override fun areItemsTheSame(
@@ -41,10 +41,6 @@ class PokemonRecyclerAdapter(val listener: OnPokemonClicked)
         holder.bind(getItem(position))
     }
 
-    fun interface OnPokemonClicked {
-        fun onClicked(id: String)
-    }
-
     inner class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val pokemonNameText: TextView = itemView.findViewById(R.id.pokemon_name)
         private val pokemonUrlNameText: TextView = itemView.findViewById(R.id.pokemon_url)
@@ -53,9 +49,8 @@ class PokemonRecyclerAdapter(val listener: OnPokemonClicked)
             pokemonNameText.text = item.name
             pokemonUrlNameText.text = item.url
             itemView.setOnClickListener {
-                //val pokemonDetailsFragment = PokemonDetailsFragment(item.url)
                 Log.d("PokemonID", "Pokemon ID: ${item.url}")
-                listener.onClicked(item.url)
+                listener(item.url)
             }
 
 

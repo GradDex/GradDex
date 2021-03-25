@@ -17,16 +17,16 @@ class PokemonDetailsViewModel : ViewModel() {
     val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
     val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
 
+    val tag = "PokeAPI Details"
+
+    // Initialise rest client and implement a JSON adapter
+    private val client = OkHttpClient()
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    val adapter: JsonAdapter<PokemonDetailsResponse> = moshi.adapter(
+        PokemonDetailsResponse::class.java
+    )
+
     fun syncPokemonDetails(url: String) {
-
-        val tag = "PokeAPI Details"
-
-        // Initialise rest client and implement a JSON adapter
-        val client = OkHttpClient()
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val adapter: JsonAdapter<PokemonDetailsResponse> = moshi.adapter(
-            PokemonDetailsResponse::class.java
-        )
 
         // Build the request
         val request = Request.Builder().url(url).build()
