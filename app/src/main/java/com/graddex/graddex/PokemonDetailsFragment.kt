@@ -24,7 +24,6 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
     private val pokemonId: String = args.getString(pokemonKey, "")
 
     private lateinit var binding: FragmentPokemonDetailsBinding
-    private lateinit var viewModel: PokemonDetailsViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -38,19 +37,19 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             inflater, R.layout.fragment_pokemon_details, container, false
         )
 
-        // Call the Pokemon Details view model for specified Pokemon ID
-        viewModel = ViewModelProvider(this)
-            .get(PokemonDetailsViewModel::class.java)
-
-        binding.statusText.text = getString(loading)
-        viewModel.syncPokemonDetails(pokemonId)
-
         return binding.root
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // Call the Pokemon Details view model for specified Pokemon ID
+        val viewModel: PokemonDetailsViewModel = ViewModelProvider(this)
+            .get(PokemonDetailsViewModel::class.java)
+
+        binding.statusText.text = getString(loading)
+        viewModel.syncPokemonDetails(pokemonId)
 
         // Update UI with details
         viewModel.pokemonSpriteFront.observe(viewLifecycleOwner,
