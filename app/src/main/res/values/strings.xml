@@ -5,7 +5,7 @@
     <string name="error_list">There was an issue downloading the list</string>
     <string name="error_details">There was an issue downloading this Pokemon\'s details</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="abilities">Abilities:</string>
     <string name="ability">Ability:</string>
+    <string name="hidden_ability">Hidden Ability:</string>
 </resources>

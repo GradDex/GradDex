@@ -2,7 +2,7 @@ package com.graddex.graddex.models
 
 data class PokemonAbility(val name: String, val url: String)
 
-data class PokemonAbilities(val ability: PokemonAbility)
+data class PokemonAbilities(val ability: PokemonAbility, val is_hidden: Boolean)
 
 data class PokemonType(val name: String, val url: String)
 

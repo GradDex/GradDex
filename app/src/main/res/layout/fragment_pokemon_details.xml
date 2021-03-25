@@ -33,6 +33,7 @@
             android:id="@+id/pokemon_back_image"
             android:layout_width="160dp"
             android:layout_height="160dp"
+            android:importantForAccessibility="no"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/pokemon_front_image"
             app:layout_constraintTop_toTopOf="@id/pokemon_front_image" />
@@ -54,22 +55,12 @@
             android:id="@+id/pokemon_types"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pokemon_name"
             tools:text="This is the Pokemon's type(s)" />
-
-        <TextView
-            android:id="@+id/pokemon_abilities_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pokemon_types"
-            tools:text="Ability/Abilities" />
 
         <TextView
             android:id="@+id/pokemon_abilities"
@@ -78,8 +69,18 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pokemon_abilities_header"
-            tools:text="Ability 1, Ability 2, Ability 3..." />
+            app:layout_constraintTop_toBottomOf="@id/pokemon_types"
+            tools:text="Abilities: Ability 1 and Ability 2" />
+
+        <TextView
+            android:id="@+id/pokemon_hidden_ability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_abilities"
+            tools:text="Hidden Ability: ..." />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
