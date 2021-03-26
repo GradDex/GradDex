@@ -26,8 +26,8 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
     private lateinit var binding: FragmentPokemonDetailsBinding
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         Log.d(tag, "PokemonID: $pokemonId")
@@ -57,39 +57,44 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
                 binding.pokemonFrontImage.load(pokemonSpriteFront)
                 binding.statusText.visibility = View.GONE
             })
-        viewModel.pokemonSpriteBack.observe(viewLifecycleOwner,
-            { pokemonSpriteBack -> binding.pokemonBackImage.load(pokemonSpriteBack) })
-        viewModel.pokemonName.observe(viewLifecycleOwner,
-            { pokemonName -> binding.pokemonName.text = pokemonName.toString().capitalize(Locale.ROOT) })
-        viewModel.pokemonTypes.observe(viewLifecycleOwner,
-            { pokemonTypes ->
-                val pokemonTypeList = mutableListOf<String>()
-                for (element in pokemonTypes) {
-                    pokemonTypeList += element.type.name.capitalize(Locale.ROOT)
-                }
-                binding.pokemonTypes.text = pokemonTypeList.joinToString(" | ")
-            })
-        viewModel.pokemonAbilities.observe(viewLifecycleOwner,
-            { pokemonAbilities ->
-                Log.d(tag, "Pokemon Abilities: $pokemonAbilities")
-                val pokemonAbilitiesList = mutableListOf<String>()
-                for (element in pokemonAbilities) {
-                    if (!element.is_hidden) {
-                        pokemonAbilitiesList += element.ability.name.capitalize(Locale.ROOT)
-                    } else {
-                        val pokemonHiddenAbility = element.ability.name.capitalize(Locale.ROOT)
-                        val hiddenAbilityText = String.format("%s %s", getString(hidden_ability), pokemonHiddenAbility)
-                        binding.pokemonHiddenAbility.text = hiddenAbilityText
-                    }
-                }
-                if (pokemonAbilitiesList.size > 1) {
-                    val pokemonAbilityText = String.format("%s %s", getString(abilities), pokemonAbilitiesList.joinToString(" and "))
-                    binding.pokemonAbilities.text = pokemonAbilityText
+        viewModel.pokemonSpriteBack.observe(viewLifecycleOwner) { pokemonSpriteBack ->
+            binding.pokemonBackImage.load(pokemonSpriteBack)
+        }
+        viewModel.pokemonName.observe(viewLifecycleOwner) { pokemonName ->
+            binding.pokemonName.text = pokemonName.toString().capitalize(Locale.ROOT)
+        }
+        viewModel.pokemonTypes.observe(viewLifecycleOwner) { pokemonTypes ->
+            val pokemonTypeList = mutableListOf<String>()
+            for (element in pokemonTypes) {
+                pokemonTypeList += element.type.name.capitalize(Locale.ROOT)
+            }
+            binding.pokemonTypes.text = pokemonTypeList.joinToString(" | ")
+        }
+        viewModel.pokemonAbilities.observe(viewLifecycleOwner) { pokemonAbilities ->
+            val pokemonAbilitiesList = mutableListOf<String>()
+            for (element in pokemonAbilities) {
+                if (!element.is_hidden) {
+                    pokemonAbilitiesList += element.ability.name.capitalize(Locale.ROOT)
                 } else {
-                    val pokemonAbilityText = String.format("%s %s", getString(ability), pokemonAbilitiesList[0])
-                    binding.pokemonAbilities.text = pokemonAbilityText
+                    val pokemonHiddenAbility = element.ability.name.capitalize(Locale.ROOT)
+                    val hiddenAbilityText =
+                        String.format("%s %s", getString(hidden_ability), pokemonHiddenAbility)
+                    binding.pokemonHiddenAbility.text = hiddenAbilityText
                 }
-            })
+            }
+            if (pokemonAbilitiesList.size > 1) {
+                val pokemonAbilityText = String.format(
+                    "%s %s",
+                    getString(abilities),
+                    pokemonAbilitiesList.joinToString(" and ")
+                )
+                binding.pokemonAbilities.text = pokemonAbilityText
+            } else {
+                val pokemonAbilityText =
+                    String.format("%s %s", getString(ability), pokemonAbilitiesList[0])
+                binding.pokemonAbilities.text = pokemonAbilityText
+            }
+        }
     }
 
 }
