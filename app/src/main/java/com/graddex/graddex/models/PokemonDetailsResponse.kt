@@ -10,7 +10,10 @@ data class PokemonTypes(val slot: Int, val type: PokemonType)
 
 data class PokemonSprites(val back_default: String, val front_default: String)
 
+data class PokemonLocationEncounters( val location_area_encounters: String )
+
 data class PokemonDetailsResponse(
     val abilities: List<PokemonAbilities>, val name: String, val types: List<PokemonTypes>,
-    val sprites: PokemonSprites
+    val sprites: PokemonSprites, val locationEncounters: PokemonLocationEncounters
 )
+

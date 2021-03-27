@@ -16,6 +16,7 @@ class PokemonDetailsViewModel : ViewModel() {
     val pokemonName: MutableLiveData<String> = MutableLiveData()
     val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
     val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
+    val pokemonLocationEncounters: MutableLiveData<String> = MutableLiveData()
 
     val tag = "PokeAPI Details"
 
@@ -49,6 +50,7 @@ class PokemonDetailsViewModel : ViewModel() {
                 pokemonName.postValue(detailsRes.name)
                 pokemonTypes.postValue(detailsRes.types)
                 pokemonAbilities.postValue(detailsRes.abilities)
+                pokemonLocationEncounters.postValue(detailsRes.locationEncounters.toString())
             }
         })
     }

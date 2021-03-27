@@ -82,6 +82,16 @@
             app:layout_constraintTop_toBottomOf="@id/pokemon_abilities"
             tools:text="Hidden Ability: ..." />
 
+        <TextView
+            android:id="@+id/pokemon_location_encounters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_hidden_ability"
+            tools:text="The location encounters are: ..." />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

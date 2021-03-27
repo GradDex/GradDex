@@ -95,6 +95,9 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
                 binding.pokemonAbilities.text = pokemonAbilityText
             }
         }
-    }
+
+        viewModel.pokemonLocationEncounters.observe(viewLifecycleOwner) { pokemonLocationEncounters ->
+            binding.pokemonLocationEncounters.text = pokemonLocationEncounters.toString().capitalize(Locale.ROOT)
+        }
 
 }
