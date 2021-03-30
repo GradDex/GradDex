@@ -20,8 +20,8 @@ class PokemonDetailsViewModel : ViewModel() {
     val previousEvolutionSprite: MutableLiveData<String> = MutableLiveData()
     val secondEvolution: MutableLiveData<String> = MutableLiveData()
     val secondEvolutionUrl: MutableLiveData<String> = MutableLiveData()
-    val thirdEvolution: MutableLiveData<String?> = MutableLiveData()
-    val thirdEvolutionUrl: MutableLiveData<String?> = MutableLiveData()
+    val thirdEvolution: MutableLiveData<String> = MutableLiveData()
+    val thirdEvolutionUrl: MutableLiveData<String> = MutableLiveData()
     val evolutionSprite: MutableLiveData<String> = MutableLiveData()
 
     val tag = "PokeAPI Details"
@@ -117,8 +117,10 @@ class PokemonDetailsViewModel : ViewModel() {
                                     val evolutionChain = evolutionRes!!.chain.evolves_to[0]
                                     secondEvolution.postValue(evolutionChain!!.species.name)
                                     secondEvolutionUrl.postValue(evolutionChain.species.url)
-                                    thirdEvolution.postValue(evolutionChain.evolves_to[0]?.species?.name)
-                                    thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]?.species?.url)
+                                    if (evolutionChain.evolves_to.isNotEmpty()) {
+                                        thirdEvolution.postValue(evolutionChain.evolves_to[0]!!.species.name)
+                                        thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]!!.species.url)
+                                    }
                                 }
                             })
                         }

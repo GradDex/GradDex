@@ -129,7 +129,6 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:importantForAccessibility="no"
-            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@id/evolves_to"
             app:layout_constraintStart_toStartOf="@id/evolves_to"
             app:layout_constraintTop_toBottomOf="@id/evolves_to" />
