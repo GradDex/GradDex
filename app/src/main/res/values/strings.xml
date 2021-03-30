@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GradDex, a Pokedex app!</string>
     <string name="hello_world">Hello World, this is a pokemon app</string>
-    <string name="loading">Loading...</string>
-    <string name="error">There was an issue downloading the list</string>
+    <string name="loading">Loading…</string>
+    <string name="error_list">There was an issue downloading the list</string>
+    <string name="error_details">There was an issue downloading this Pokemon\'s details</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="abilities">Abilities:</string>
+    <string name="ability">Ability:</string>
+    <string name="hidden_ability">Hidden Ability:</string>
 </resources>

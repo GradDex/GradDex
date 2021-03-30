@@ -15,7 +15,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var pokemonRecyclerView: RecyclerView
-
     private lateinit var pokemonAdapter: PokemonRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +31,13 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.status_text)
         pokemonRecyclerView = findViewById(R.id.pokemon_recyclerview)
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
-        pokemonAdapter = PokemonRecyclerAdapter()
+
+        pokemonAdapter = PokemonRecyclerAdapter { id ->
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(id))
+                    .addToBackStack(null)
+                    .commit()
+        }
         pokemonRecyclerView.adapter = pokemonAdapter
 
         // Initialise rest client with cache and implement a JSON adapter
@@ -46,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonResponse> = moshi.adapter(PokemonResponse::class.java)
 
-        // Build the request for a cache valid for 30 minutes
+        // Build the request
         val request = Request.Builder()
                 .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
                 .build()
@@ -62,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
                 // Update UI to show error text
                 runOnUiThread {
-                    statusText.text = getString(R.string.error)
+                    statusText.text = getString(R.string.error_list)
                 }
             }
 
@@ -84,5 +88,4 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }
