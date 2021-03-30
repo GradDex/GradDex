@@ -82,6 +82,67 @@
             app:layout_constraintTop_toBottomOf="@id/pokemon_abilities"
             tools:text="Hidden Ability: ..." />
 
+        <TextView
+            android:id="@+id/evolves_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/evolves_from"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/evolves_to"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pokemon_hidden_ability" />
+
+        <ImageView
+            android:id="@+id/evolves_from_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintEnd_toEndOf="@id/evolves_from"
+            app:layout_constraintStart_toStartOf="@id/evolves_from"
+            app:layout_constraintTop_toBottomOf="@id/evolves_from" />
+
+        <TextView
+            android:id="@+id/evolves_from_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/evolves_from"
+            app:layout_constraintStart_toStartOf="@id/evolves_from"
+            app:layout_constraintTop_toBottomOf="@id/evolves_from_image"
+            tools:text="Previous Evolution" />
+
+        <TextView
+            android:id="@+id/evolves_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/evolves_to"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/evolves_from"
+            app:layout_constraintTop_toTopOf="@id/evolves_from" />
+
+        <ImageView
+            android:id="@+id/evolves_to_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:importantForAccessibility="no"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/evolves_to"
+            app:layout_constraintStart_toStartOf="@id/evolves_to"
+            app:layout_constraintTop_toBottomOf="@id/evolves_to" />
+
+        <TextView
+            android:id="@+id/evolves_to_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/evolves_to"
+            app:layout_constraintStart_toStartOf="@id/evolves_to"
+            app:layout_constraintTop_toBottomOf="@id/evolves_to_image"
+            tools:text="Next Evolution" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

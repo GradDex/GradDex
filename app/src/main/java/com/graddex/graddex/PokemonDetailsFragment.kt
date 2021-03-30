@@ -57,12 +57,35 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
                 binding.pokemonFrontImage.load(pokemonSpriteFront)
                 binding.statusText.visibility = View.GONE
             })
+
         viewModel.pokemonSpriteBack.observe(viewLifecycleOwner) { pokemonSpriteBack ->
             binding.pokemonBackImage.load(pokemonSpriteBack)
         }
+
         viewModel.pokemonName.observe(viewLifecycleOwner) { pokemonName ->
-            binding.pokemonName.text = pokemonName.toString().capitalize(Locale.ROOT)
+            binding.pokemonName.text = pokemonName.capitalize(Locale.ROOT)
+
+            viewModel.secondEvolution.observe(viewLifecycleOwner) { secondEvolution ->
+                if (secondEvolution == pokemonName) {
+                    viewModel.thirdEvolution.observe(viewLifecycleOwner) { thirdEvolution ->
+                        if (thirdEvolution != null) {
+                            binding.evolvesTo.visibility = View.VISIBLE
+                            binding.evolvesToName.text = thirdEvolution.capitalize(Locale.ROOT)
+                            viewModel.thirdEvolutionUrl.observe(viewLifecycleOwner) { thirdEvolutionUrl ->
+
+                            }
+                        }
+                    }
+                } else {
+                    viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
+                        binding.evolvesTo.visibility = View.VISIBLE
+                        binding.evolvesToName.text = secondEvolution.capitalize(Locale.ROOT)
+                        viewModel.getEvolutionSprites(secondEvolutionUrl)
+                    }
+                }
+            }
         }
+
         viewModel.pokemonTypes.observe(viewLifecycleOwner) { pokemonTypes ->
             val pokemonTypeList = mutableListOf<String>()
             for (element in pokemonTypes) {
@@ -70,6 +93,7 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             }
             binding.pokemonTypes.text = pokemonTypeList.joinToString(" | ")
         }
+
         viewModel.pokemonAbilities.observe(viewLifecycleOwner) { pokemonAbilities ->
             val pokemonAbilitiesList = mutableListOf<String>()
             for (element in pokemonAbilities) {
@@ -95,6 +119,28 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
                 binding.pokemonAbilities.text = pokemonAbilityText
             }
         }
+
+        viewModel.previousEvolution.observe(viewLifecycleOwner) { previousEvolution ->
+            binding.evolvesFrom.visibility = View.VISIBLE
+            binding.evolvesFromName.text = previousEvolution.capitalize(Locale.ROOT)
+        }
+
+        viewModel.previousEvolutionSprite.observe(viewLifecycleOwner) { previousEvolutionSprite ->
+            binding.evolvesFromImage.load(previousEvolutionSprite)
+        }
+
+        viewModel.thirdEvolutionUrl.observe(viewLifecycleOwner) { thirdEvolutionUrl ->
+            viewModel.getEvolutionSprites(thirdEvolutionUrl!!)
+        }
+
+        viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
+            viewModel.getEvolutionSprites(secondEvolutionUrl)
+        }
+
+        viewModel.evolutionSprite.observe(viewLifecycleOwner) { evolutionSprite ->
+            binding.evolvesToImage.load(evolutionSprite)
+        }
+
     }
 
 }

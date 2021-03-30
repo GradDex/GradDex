@@ -8,4 +8,6 @@
     <string name="abilities">Abilities:</string>
     <string name="ability">Ability:</string>
     <string name="hidden_ability">Hidden Ability:</string>
+    <string name="evolves_from">Evolves From</string>
+    <string name="evolves_to">Evolves To</string>
 </resources>
