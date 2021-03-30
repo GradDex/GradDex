@@ -15,7 +15,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +32,13 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.status_text)
         pokemonRecyclerView = findViewById(R.id.pokemon_recyclerview)
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
-        pokemonAdapter = PokemonRecyclerAdapter()
+
+        pokemonAdapter = PokemonRecyclerAdapter { id ->
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(id))
+                    .addToBackStack(null)
+                    .commit()
+        }
         pokemonRecyclerView.adapter = pokemonAdapter
         pokemonAPIFetch.fetch(
                 application,
@@ -48,18 +53,16 @@ class MainActivity : AppCompatActivity() {
                 onFailure = {
                     // Update UI to show error text
                     runOnUiThread {
-                        statusText.text = getString(R.string.error)
+                        statusText.text = getString(R.string.error_list)
                     }
 
                 }
 
         )
 
-
         // Execute the request
         statusText.text = getString(R.string.loading)
         Log.d(tag, "Connecting to PokeAPI")
 
     }
-
 }

@@ -47,11 +47,11 @@ dependencies {
     implementation "com.squareup.moshi:moshi-adapters:1.11.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+    implementation "io.coil-kt:coil:1.1.1"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     debugImplementation "com.github.chuckerteam.chucker:library:3.4.0"
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.3.0"
 }

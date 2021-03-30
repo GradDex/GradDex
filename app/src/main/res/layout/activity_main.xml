@@ -30,5 +30,9 @@
         tools:listitem="@layout/list_item_pokemon"
         tools:visibility="visible" />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/pokemon_details_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
