@@ -50,7 +50,7 @@ class PokemonDetailsViewModel : ViewModel() {
                 pokemonName.postValue(detailsRes.name)
                 pokemonTypes.postValue(detailsRes.types)
                 pokemonAbilities.postValue(detailsRes.abilities)
-                pokemonLocationEncounters.postValue(detailsRes.locationEncounters.toString())
+                pokemonLocationEncounters.postValue(detailsRes.location_area_encounters)
             }
         })
     }

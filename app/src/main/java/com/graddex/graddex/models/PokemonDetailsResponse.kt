@@ -14,6 +14,8 @@ data class PokemonLocationEncounters( val location_area_encounters: String )
 
 data class PokemonDetailsResponse(
     val abilities: List<PokemonAbilities>, val name: String, val types: List<PokemonTypes>,
-    val sprites: PokemonSprites, val locationEncounters: PokemonLocationEncounters
+    val sprites: PokemonSprites, val location_area_encounters: String
 )
+
+data class PokemonLocation(val name: String, val url: String)
 
