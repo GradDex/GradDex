@@ -66,22 +66,26 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             binding.pokemonName.text = pokemonName.capitalize(Locale.ROOT)
 
             viewModel.secondEvolution.observe(viewLifecycleOwner) { secondEvolution ->
-                if (secondEvolution == pokemonName) {
-                    viewModel.thirdEvolution.observe(viewLifecycleOwner) { thirdEvolution ->
-                        if (thirdEvolution != null) {
-                            binding.evolvesTo.visibility = View.VISIBLE
+                viewModel.thirdEvolution.observe(viewLifecycleOwner) { thirdEvolution ->
+                    if (thirdEvolution != "No Third Evolution" && thirdEvolution != pokemonName) {
+                        binding.evolvesTo.visibility = View.VISIBLE
+                        if (secondEvolution == pokemonName) {
                             binding.evolvesToName.text = thirdEvolution.capitalize(Locale.ROOT)
                             viewModel.thirdEvolutionUrl.observe(viewLifecycleOwner) { thirdEvolutionUrl ->
                                 viewModel.getEvolutionSprites(thirdEvolutionUrl)
-                                check = true
+                            }
+                        } else {
+                            binding.evolvesToName.text = secondEvolution.capitalize(Locale.ROOT)
+                            viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
+                                viewModel.getEvolutionSprites(secondEvolutionUrl)
                             }
                         }
-                    }
-                } else {
-                    viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
+                    } else if (thirdEvolution == "No Third Evolution" && secondEvolution != pokemonName) {
                         binding.evolvesTo.visibility = View.VISIBLE
                         binding.evolvesToName.text = secondEvolution.capitalize(Locale.ROOT)
-                        viewModel.getEvolutionSprites(secondEvolutionUrl)
+                        viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
+                            viewModel.getEvolutionSprites(secondEvolutionUrl)
+                        }
                     }
                 }
             }

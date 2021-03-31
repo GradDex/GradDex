@@ -120,7 +120,7 @@ class PokemonDetailsViewModel : ViewModel() {
                                     if (evolutionChain.evolves_to.isNotEmpty()) {
                                         thirdEvolution.postValue(evolutionChain.evolves_to[0]!!.species.name)
                                         thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]!!.species.url)
-                                    }
+                                    } else { thirdEvolution.postValue("No Third Evolution") }
                                 }
                             })
                         }
