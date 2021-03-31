@@ -115,7 +115,7 @@ class PokemonDetailsViewModel : ViewModel() {
                                     val evolutionRes = evolutionAdapter.fromJson(body ?: "")
                                     Log.d(tag, "Evolution Response: $evolutionRes")
                                     if (evolutionRes!!.chain.evolves_to.isNotEmpty()) {
-                                        val evolutionChain = evolutionRes!!.chain.evolves_to[0]
+                                        val evolutionChain = evolutionRes.chain.evolves_to[0]
                                         secondEvolution.postValue(evolutionChain!!.species.name)
                                         secondEvolutionUrl.postValue(evolutionChain.species.url)
                                         if (evolutionChain.evolves_to.isNotEmpty()) {

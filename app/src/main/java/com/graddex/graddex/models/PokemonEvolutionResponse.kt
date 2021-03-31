@@ -7,14 +7,8 @@ data class PokemonSpecies(
         val evolves_from_species: PokemonResponseResult?
 )
 
-data class PokemonEvolutionLevelTwo(val species: PokemonResponseResult)
-
-data class PokemonEvolutionLevelOne(
-        val evolves_to: List<PokemonEvolutionLevelTwo?>, val species: PokemonResponseResult
-)
-
 data class PokemonEvolutionChain(
-        val evolves_to: List<PokemonEvolutionLevelOne?>, val species: PokemonResponseResult
+        val evolves_to: List<PokemonEvolutionChain?>, val species: PokemonResponseResult
 )
 
 data class PokemonEvolutions(val chain: PokemonEvolutionChain)
