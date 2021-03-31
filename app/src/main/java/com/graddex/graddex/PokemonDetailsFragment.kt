@@ -135,7 +135,6 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
 
             viewModel.evolutionSprite.observe(viewLifecycleOwner) { evolutionSprite ->
                 binding.evolvesToImage.load(evolutionSprite)
-                Log.d(tag, "Evolution Sprite Observered: $evolutionSprite")
             }
 
         }

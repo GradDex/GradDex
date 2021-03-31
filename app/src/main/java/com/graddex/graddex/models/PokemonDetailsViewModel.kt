@@ -114,13 +114,17 @@ class PokemonDetailsViewModel : ViewModel() {
                                     val body = response.body?.string()
                                     val evolutionRes = evolutionAdapter.fromJson(body ?: "")
                                     Log.d(tag, "Evolution Response: $evolutionRes")
-                                    val evolutionChain = evolutionRes!!.chain.evolves_to[0]
-                                    secondEvolution.postValue(evolutionChain!!.species.name)
-                                    secondEvolutionUrl.postValue(evolutionChain.species.url)
-                                    if (evolutionChain.evolves_to.isNotEmpty()) {
-                                        thirdEvolution.postValue(evolutionChain.evolves_to[0]!!.species.name)
-                                        thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]!!.species.url)
-                                    } else { thirdEvolution.postValue("No Third Evolution") }
+                                    if (evolutionRes!!.chain.evolves_to.isNotEmpty()) {
+                                        val evolutionChain = evolutionRes!!.chain.evolves_to[0]
+                                        secondEvolution.postValue(evolutionChain!!.species.name)
+                                        secondEvolutionUrl.postValue(evolutionChain.species.url)
+                                        if (evolutionChain.evolves_to.isNotEmpty()) {
+                                            thirdEvolution.postValue(evolutionChain.evolves_to[0]!!.species.name)
+                                            thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]!!.species.url)
+                                        } else {
+                                            thirdEvolution.postValue("No Third Evolution")
+                                        }
+                                    }
                                 }
                             })
                         }
@@ -140,6 +144,7 @@ class PokemonDetailsViewModel : ViewModel() {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d(tag, "Call Failed")
             }
+
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
                 val res = adapter.fromJson(body ?: "")
