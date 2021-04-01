@@ -51,6 +51,11 @@ class PokemonDetailsViewModel : ViewModel() {
                 pokemonTypes.postValue(detailsRes.types)
                 pokemonAbilities.postValue(detailsRes.abilities)
                 pokemonLocationEncounters.postValue(detailsRes.location_area_encounters)
+
+                val pokemonLocations = PokemonLocations()
+                pokemonLocations.syncPokemonLocation(detailsRes.location_area_encounters)
+                val locationList = pokemonLocations.locationList
+
             }
         })
     }
