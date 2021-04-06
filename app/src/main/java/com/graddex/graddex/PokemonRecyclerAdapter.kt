@@ -8,21 +8,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.graddex.graddex.models.PokemonResponse_Result
+import com.graddex.graddex.models.PokemonResponseResult
 
 class PokemonRecyclerAdapter(val listener: (String) -> Unit)
-    : ListAdapter<PokemonResponse_Result, PokemonRecyclerAdapter.PokemonViewHolder>(
-        object : DiffUtil.ItemCallback<PokemonResponse_Result>() {
+    : ListAdapter<PokemonResponseResult, PokemonRecyclerAdapter.PokemonViewHolder>(
+        object : DiffUtil.ItemCallback<PokemonResponseResult>() {
             override fun areItemsTheSame(
-                    oldItem: PokemonResponse_Result,
-                    newItem: PokemonResponse_Result
+                    oldItem: PokemonResponseResult,
+                    newItem: PokemonResponseResult
             ): Boolean {
                 return oldItem === newItem
             }
 
             override fun areContentsTheSame(
-                    oldItem: PokemonResponse_Result,
-                    newItem: PokemonResponse_Result
+                    oldItem: PokemonResponseResult,
+                    newItem: PokemonResponseResult
             ): Boolean {
                 return oldItem == newItem
             }
@@ -45,7 +45,7 @@ class PokemonRecyclerAdapter(val listener: (String) -> Unit)
         private val pokemonNameText: TextView = itemView.findViewById(R.id.pokemon_name)
         private val pokemonUrlNameText: TextView = itemView.findViewById(R.id.pokemon_url)
 
-        fun bind(item: PokemonResponse_Result) {
+        fun bind(item: PokemonResponseResult) {
             pokemonNameText.text = item.name
             pokemonUrlNameText.text = item.url
             itemView.setOnClickListener {
