@@ -97,7 +97,31 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             }
         }
 
-
+        viewModel.pokemonAbilities.observe(viewLifecycleOwner) { pokemonAbilities ->
+            val pokemonAbilitiesList = mutableListOf<String>()
+            for (element in pokemonAbilities) {
+                if (!element.is_hidden) {
+                    pokemonAbilitiesList += element.ability.name.capitalize(Locale.ROOT)
+                } else {
+                    val pokemonHiddenAbility = element.ability.name.capitalize(Locale.ROOT)
+                    val hiddenAbilityText =
+                            String.format("%s %s", getString(hidden_ability), pokemonHiddenAbility)
+                    binding.pokemonHiddenAbility.text = hiddenAbilityText
+                }
+            }
+            if (pokemonAbilitiesList.size > 1) {
+                val pokemonAbilityText = String.format(
+                        "%s %s",
+                        getString(abilities),
+                        pokemonAbilitiesList.joinToString(" and ")
+                )
+                binding.pokemonAbilities.text = pokemonAbilityText
+            } else {
+                val pokemonAbilityText =
+                        String.format("%s %s", getString(ability), pokemonAbilitiesList[0])
+                binding.pokemonAbilities.text = pokemonAbilityText
+            }
+        }
 
         viewModel.pokemonLocationEncounters.observe(viewLifecycleOwner) { pokemonLocationEncounters ->
             binding.pokemonLocationEncounters.text = pokemonLocationEncounters.toString().capitalize(Locale.ROOT)
