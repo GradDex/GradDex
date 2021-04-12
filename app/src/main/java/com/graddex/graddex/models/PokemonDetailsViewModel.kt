@@ -61,8 +61,8 @@ class PokemonDetailsViewModel : ViewModel() {
 
                 val pokemonLocations = PokemonLocations()
                 pokemonLocations.syncPokemonLocation(detailsRes.location_area_encounters)
-                //val locationList = pokemonLocations.locationList
-                locationList.postValue(pokemonLocations.locationList)
+                val specificLocationList = pokemonLocations.locationList
+                locationList.postValue(specificLocationList)
 
             }
         })
