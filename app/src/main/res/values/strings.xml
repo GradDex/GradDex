@@ -5,8 +5,10 @@
     <string name="error_list">There was an issue downloading the list</string>
     <string name="error_details">There was an issue downloading this Pokemon\'s details</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="abilities">Abilities:</string>
-    <string name="ability">Ability:</string>
+    <plurals name="abilities">
+        <item quantity="one">"Ability</item>
+        <item quantity="other">Abilities</item>
+    </plurals>
     <string name="hidden_ability">Hidden Ability:</string>
     <string name="evolves_from">Evolves From</string>
     <string name="evolves_to">Evolves To</string>
