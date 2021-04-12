@@ -13,6 +13,7 @@ import coil.load
 import com.graddex.graddex.R.string.*
 import com.graddex.graddex.models.PokemonDetailsViewModel
 import com.graddex.graddex.databinding.FragmentPokemonDetailsBinding
+import com.graddex.graddex.models.PokemonLocations
 import java.util.*
 
 private const val pokemonKey: String = "pokemonKey"
@@ -47,6 +48,7 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
         // Call the Pokemon Details view model for specified Pokemon ID
         val viewModel: PokemonDetailsViewModel = ViewModelProvider(this)
                 .get(PokemonDetailsViewModel::class.java)
+
 
         binding.statusText.text = getString(loading)
         viewModel.syncPokemonDetails(pokemonId)
@@ -126,6 +128,12 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
         viewModel.pokemonLocationEncounters.observe(viewLifecycleOwner) { pokemonLocationEncounters ->
             binding.pokemonLocationEncounters.text = pokemonLocationEncounters.toString().capitalize(Locale.ROOT)
         }
+
+        viewModel.locationList.observe(viewLifecycleOwner){locationList ->
+            binding.locationList.text = locationList.joinToString(" | ")
+        }
+
+
 
 
     }

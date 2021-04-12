@@ -3,6 +3,7 @@ package com.graddex.graddex.models
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -17,6 +18,9 @@ class PokemonDetailsViewModel : ViewModel() {
     val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
     val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
     val pokemonLocationEncounters: MutableLiveData<String> = MutableLiveData()
+    val locationList: MutableLiveData<List<PokemonLocation>> = MutableLiveData()
+
+
 
     val tag = "PokeAPI Details"
 
@@ -52,9 +56,13 @@ class PokemonDetailsViewModel : ViewModel() {
                 pokemonAbilities.postValue(detailsRes.abilities)
                 pokemonLocationEncounters.postValue(detailsRes.location_area_encounters)
 
+                // how to call locationList from the PokemonLocations class
+                // In general how to call functions from other classes
+
                 val pokemonLocations = PokemonLocations()
                 pokemonLocations.syncPokemonLocation(detailsRes.location_area_encounters)
-                val locationList = pokemonLocations.locationList
+                //val locationList = pokemonLocations.locationList
+                locationList.postValue(pokemonLocations.locationList)
 
             }
         })

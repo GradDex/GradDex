@@ -3,13 +3,14 @@ package com.graddex.graddex.models
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import java.io.IOException
 
-class PokemonLocations()  {
+class PokemonLocations() {
     val locationList: MutableLiveData<List<PokemonLocation>> = MutableLiveData()
 
     val tag = "PokeAPI Location"
@@ -57,17 +58,3 @@ class PokemonLocations()  {
     }
 }
 
-// Define location array
-// The JSON response is in the form of a list
-// Iterate over the JSON response (array) and get each object seperately
-// Call the location_area object (which is also an object itself)
-// Within the location_area object derive the "name" component
-// replace - with a space
-// Add specific location name to a defined locations array
-// combine components of the location array into a single string
-// send the string to the be used in the PokemonDetailsFragment Object (Do I use return?)
-
-// How do I know the number of items in a list so that I can iterate through it?
-// API Fetch class still not showing after the pull request
-// Is there a print option that I can use to figure out location of errors and information about certain aspects of the code?
-// How Can I get a scrap book
