@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.*
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.http.GET
+import retrofit2.http.Path
 import java.io.IOException
 import java.util.*
 
@@ -45,6 +48,7 @@ class PokemonDetailsViewModel : ViewModel() {
             PokemonEvolutions::class.java
     )
 
+    /**
     fun syncPokemonDetails(url: String) {
 
         // Build the request
@@ -190,6 +194,19 @@ class PokemonDetailsViewModel : ViewModel() {
                 //nextEvolutionSprite.postValue(res!!.sprites.front_default)
             }
         })
+    }**/
+
+    interface PokeAPI {
+        @GET("{pokemon_url}")
+        fun getPokemonDetails(@Path("pokemon_url") pokemonRequest: String): Call<PokemonDetailsResponse>
+    }
+
+    suspend fun pokemonAPI(): PokemonDetailsResponse {
+        val retrofit = Retrofit.Builder()
+                .baseUrl("")
+                .build()
+
+        val service = retrofit.create(PokeAPI::class)
     }
 
 }
