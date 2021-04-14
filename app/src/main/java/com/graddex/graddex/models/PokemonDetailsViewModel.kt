@@ -103,7 +103,7 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
                 )
             )
 
-            val species = pokemonService.getSpecies("")
+//            val species = pokemonService.getSpecies("")
         }
 
 
