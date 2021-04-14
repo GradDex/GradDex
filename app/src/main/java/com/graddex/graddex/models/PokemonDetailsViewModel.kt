@@ -3,15 +3,8 @@ package com.graddex.graddex.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.graddex.graddex.PokemonService
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.graddex.graddex.PokemonServiceImpl
 import kotlinx.coroutines.*
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.http.GET
-import retrofit2.http.Path
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -60,7 +53,7 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
 //        PokemonEvolutions::class.java
 //    )
 
-    private val pokemonService = PokemonService()
+    private val pokemonService: PokemonService = PokemonServiceImpl()
 
 
     fun syncPokemonDetails(pokemonName: String) {

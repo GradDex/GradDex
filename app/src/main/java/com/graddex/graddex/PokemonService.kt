@@ -9,7 +9,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-class PokemonService {
+interface PokemonService {
+    suspend fun getPokemonDetails(pokemonName: String): PokemonDetailsResponse
+    suspend fun getSpecies(speciesName: String): Unit
+}
+
+class PokemonServiceImpl : PokemonService {
 
     interface PokeAPI {
         @GET("pokemon/{pokemonName}")
@@ -31,8 +36,8 @@ class PokemonService {
 
     private val service = retrofit.create(PokeAPI::class.java)
 
-    suspend fun getPokemonDetails(pokemonName: String): PokemonDetailsResponse =
+    override suspend fun getPokemonDetails(pokemonName: String): PokemonDetailsResponse =
         service.getPokemonDetails(pokemonName)
 
-    suspend fun getSpecies(speciesName: String) : Unit = TODO()
+    override suspend fun getSpecies(speciesName: String): Unit = TODO()
 }
