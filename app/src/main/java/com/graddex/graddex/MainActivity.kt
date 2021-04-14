@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
         pokemonRecyclerView = findViewById(R.id.pokemon_recyclerview)
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        pokemonAdapter = PokemonRecyclerAdapter { id ->
+        pokemonAdapter = PokemonRecyclerAdapter { name: String, url: String ->
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(id))
-                    .addToBackStack(null)
-                    .commit()
+            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(name, url))
+                .addToBackStack(null)
+                .commit()
         }
         pokemonRecyclerView.adapter = pokemonAdapter
 
@@ -44,16 +44,16 @@ class MainActivity : AppCompatActivity() {
         val cache = Cache(File(application.cacheDir, "http_cache"),
                 50L * 1024L * 1024L)
         val client = OkHttpClient.Builder()
-                .cache(cache)
-                .addInterceptor(ChuckerInterceptor(this))
-                .build()
+            .cache(cache)
+            .addInterceptor(ChuckerInterceptor(this))
+            .build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonResponse> = moshi.adapter(PokemonResponse::class.java)
 
         // Build the request
         val request = Request.Builder()
-                .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-                .build()
+            .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
+            .build()
 
         // Execute the request
         statusText.text = getString(R.string.loading)
