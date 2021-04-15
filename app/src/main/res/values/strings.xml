@@ -6,10 +6,13 @@
     <string name="error_details">There was an issue downloading this Pokemon\'s details</string>
     <!-- TODO: Remove or change this placeholder text -->
     <plurals name="abilities">
-        <item quantity="one">"Ability</item>
-        <item quantity="other">Abilities</item>
+        <item quantity="one">Ability:\u0020</item>
+        <item quantity="other">Abilities\u0020</item>
     </plurals>
-    <string name="hidden_ability">Hidden Ability:</string>
+    <plurals name="hidden_abilities">
+        <item quantity="one">Hidden Ability:\u0020</item>
+        <item quantity="other">Hidden Abilities:\u0020</item>
+    </plurals>
     <string name="evolves_from">Evolves From</string>
     <string name="evolves_to">Evolves To</string>
 </resources>

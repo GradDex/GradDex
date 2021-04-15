@@ -63,44 +63,26 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
             val pokemonSpriteFront = detailsRes!!.sprites.front_default
             val pokemonSpriteBack = detailsRes.sprites.back_default
             val pokemonName = detailsRes.name.capitalize(Locale.ROOT)
-            val pokemonTypes = mutableListOf<String>()
-            for (element in detailsRes.types) {
-                pokemonTypes += element.type.name.capitalize(Locale.ROOT)
-            }
-//            val pokemonAbilities = mutableListOf<String>()
-//            for (element in detailsRes.abilities) {
-//                if (!element.is_hidden) {
-//                    pokemonAbilities += element.ability.name.capitalize(Locale.ROOT)
-//                } else {
-//                    val pokemonHiddenAbility = element.ability.name.capitalize(Locale.ROOT)
-//                }
-//            }
-//            fire, not hidden
-//            wind, hidden
-//            earth, not hidden
-
-//            fire, not hidden
-//            earth, not hidden
-
-//            FIRE
-//            EARTH
-
-
+            val pokemonTypes = detailsRes.types
+                    .joinToString(" and ") { it.type.name.capitalize(Locale.ROOT) }
             val pokemonAbilities = detailsRes.abilities
-                .filter { !it.is_hidden }
-                .map { it.ability.name.capitalize(Locale.ROOT) }
+                    .filter { !it.is_hidden }
+                    .map { it.ability.name.capitalize(Locale.ROOT) }
+            val pokemonHiddenAbility = detailsRes.abilities
+                    .filter { it.is_hidden }
+                    .map{ it.ability.name.capitalize(Locale.ROOT) }
 
-            val pokemonHiddenAbility =
-                detailsRes.abilities.find { it.is_hidden }?.ability?.name?.capitalize(Locale.ROOT)
+            // String.format("%s %s", getString(hidden_ability), pokemonHiddenAbility)
 
             pokemonDetails.postValue(
-                PokemonDetails(
-                    frontSprite = pokemonSpriteFront,
-                    backSprite = pokemonSpriteBack,
-                    name = pokemonName,
-                    abilities = pokemonAbilities,
-                    hiddenAbility = pokemonHiddenAbility
-                )
+                    PokemonDetails(
+                            frontSprite = pokemonSpriteFront,
+                            backSprite = pokemonSpriteBack,
+                            name = pokemonName,
+                            type = pokemonTypes,
+                            abilities = pokemonAbilities,
+                            hiddenAbility = pokemonHiddenAbility
+                    )
             )
 
 //            val species = pokemonService.getSpecies("")

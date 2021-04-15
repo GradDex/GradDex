@@ -12,6 +12,6 @@ data class PokemonDetailsResponse(
 )
 
 data class PokemonDetails(
-        var frontSprite: String, val backSprite: String, val name: String, val abilities: List<String>,
-        val hiddenAbility: String?
+        var frontSprite: String, val backSprite: String, val name: String, val type: String,
+        val abilities: List<String>, val hiddenAbility: List<String>
 )
