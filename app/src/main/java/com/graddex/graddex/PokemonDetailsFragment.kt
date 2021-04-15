@@ -58,10 +58,9 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
 
         binding.statusText.text = getString(loading)
         viewModel.syncPokemonDetails(pokemonName)
-//        viewModel.syncPokemonDetails(pokemonId)
 
         // Update UI with details
-        viewModel.pokemonDetails.observe(viewLifecycleOwner) {pokemonDetails ->
+        viewModel.pokemonDetails.observe(viewLifecycleOwner) { pokemonDetails ->
             binding.statusText.visibility = View.GONE
             binding.pokemonFrontImage.load(pokemonDetails.frontSprite)
             binding.pokemonBackImage.load(pokemonDetails.backSprite)
@@ -76,7 +75,13 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
                 .toString()
                 .plus(pokemonDetails.hiddenAbility.joinToString(" and "))
         }
-    }
 
+        viewModel.previousEvolutionDetails.observe(viewLifecycleOwner) { previousEvolutionDetails ->
+            Log.d(tag, "Previous Evolution Details: $previousEvolutionDetails")
+            binding.evolvesFrom.visibility = View.VISIBLE
+            binding.evolvesFromImage.load(previousEvolutionDetails.sprite)
+            binding.evolvesFromName.text = previousEvolutionDetails.name
+        }
+    }
 
 }

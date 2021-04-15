@@ -21,44 +21,20 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
     }
 
     val pokemonDetails = MutableLiveData<PokemonDetails>()
-    val previousEvolutionRes: MutableLiveData<PokemonResponseResult> = MutableLiveData()
-    val nextEvolutionRes: MutableLiveData<PokemonResponseResult> = MutableLiveData()
-
-    /**val pokemonSpriteFront: MutableLiveData<String> = MutableLiveData()
-    val pokemonSpriteBack: MutableLiveData<String> = MutableLiveData()
-    val pokemonName: MutableLiveData<String> = MutableLiveData()
-    val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
-    val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
-    val previousEvolution: MutableLiveData<String> = MutableLiveData()
-    val previousEvolutionSprite: MutableLiveData<String> = MutableLiveData()
-    val secondEvolution: MutableLiveData<String> = MutableLiveData()
-    val secondEvolutionUrl: MutableLiveData<String> = MutableLiveData()
-    val thirdEvolution: MutableLiveData<String> = MutableLiveData()
-    val thirdEvolutionUrl: MutableLiveData<String> = MutableLiveData()
-    val nextEvolution: MutableLiveData<String> = MutableLiveData()
-    val nextEvolutionSprite: MutableLiveData<String> = MutableLiveData()**/
+    val previousEvolutionDetails = MutableLiveData<EvolutionDetails>()
+    val nextEvolutionDetails = MutableLiveData<EvolutionDetails>()
 
     val tag = "PokeAPI Details"
-
-    // Initialise rest client and implement a JSON adapter
-//    private val client = OkHttpClient()
-//    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-//    val adapter: JsonAdapter<PokemonDetailsResponse> = moshi.adapter(
-//        PokemonDetailsResponse::class.java
-//    )
-//    val speciesAdapter: JsonAdapter<PokemonSpecies> = moshi.adapter(
-//        PokemonSpecies::class.java
-//    )
-//    val evolutionAdapter: JsonAdapter<PokemonEvolutions> = moshi.adapter(
-//        PokemonEvolutions::class.java
-//    )
 
     private val pokemonService: PokemonService = PokemonServiceImpl()
 
 
     fun syncPokemonDetails(pokemonName: String) {
         launch(coroutineContext) {
+
+            // Get Pokemon Details
             val detailsRes = pokemonService.getPokemonDetails(pokemonName)
+            val speciesRes = pokemonService.getSpeciesDetails(pokemonName)
 
             val pokemonSpriteFront = detailsRes!!.sprites.front_default
             val pokemonSpriteBack = detailsRes.sprites.back_default
@@ -85,7 +61,22 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
                     )
             )
 
-//            val species = pokemonService.getSpecies("")
+            // Get previous evolution details
+            if (speciesRes.evolves_from_species != null) {
+                val previousEvolutionName = speciesRes.evolves_from_species.name
+                val previousEvoRes = pokemonService.getPokemonDetails(previousEvolutionName)
+                val previousEvolutionSprite = previousEvoRes.sprites.front_default
+
+                previousEvolutionDetails.postValue(
+                    EvolutionDetails(
+                        sprite = previousEvolutionSprite,
+                        name = previousEvolutionName.capitalize(Locale.ROOT)
+                    )
+                )
+            }
+
+            // Get next evolution details
+
         }
 
 
