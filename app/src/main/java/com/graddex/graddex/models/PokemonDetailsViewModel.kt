@@ -23,7 +23,7 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
 
     val pokemonDetails = MutableLiveData<PokemonDetails>()
     val previousEvolutionDetails = MutableLiveData<EvolutionDetails>()
-    private val nextEvolutionDetails = MutableLiveData<EvolutionDetails>()
+    val nextEvolutionDetails = MutableLiveData<EvolutionDetails>()
 
     private val tag = "PokeAPI Details"
 
