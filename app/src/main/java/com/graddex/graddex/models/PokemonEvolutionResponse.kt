@@ -8,7 +8,7 @@ data class PokemonSpecies(
 )
 
 data class PokemonEvolutionChain(
-        val evolves_to: List<PokemonEvolutionChain?>, val species: PokemonResponseResult
+        val evolves_to: List<PokemonEvolutionChain>, val species: PokemonResponseResult
 )
 
 data class PokemonEvolutions(val chain: PokemonEvolutionChain)

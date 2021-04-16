@@ -77,10 +77,15 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
         }
 
         viewModel.previousEvolutionDetails.observe(viewLifecycleOwner) { previousEvolutionDetails ->
-            Log.d(tag, "Previous Evolution Details: $previousEvolutionDetails")
             binding.evolvesFrom.visibility = View.VISIBLE
             binding.evolvesFromImage.load(previousEvolutionDetails.sprite)
             binding.evolvesFromName.text = previousEvolutionDetails.name
+        }
+
+        viewModel.nextEvolutionDetails.observe(viewLifecycleOwner) { nextEvolutionDetails ->
+            binding.evolvesTo.visibility = View.VISIBLE
+            binding.evolvesToImage.load(nextEvolutionDetails.sprite)
+            binding.evolvesToName.text = nextEvolutionDetails.name
         }
     }
 

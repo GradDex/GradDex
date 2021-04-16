@@ -2,6 +2,7 @@ package com.graddex.graddex
 
 import android.util.Log
 import com.graddex.graddex.models.PokemonDetailsResponse
+import com.graddex.graddex.models.PokemonEvolutions
 import com.graddex.graddex.models.PokemonSpecies
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -15,6 +16,7 @@ import retrofit2.http.Path
 interface PokemonService {
     suspend fun getPokemonDetails(pokemonName: String): PokemonDetailsResponse
     suspend fun getSpeciesDetails(speciesName: String): PokemonSpecies
+    suspend fun getEvolutionChain(evolutionID: String): PokemonEvolutions
 }
 
 class PokemonServiceImpl : PokemonService {
@@ -24,6 +26,8 @@ class PokemonServiceImpl : PokemonService {
         suspend fun getPokemonDetails(@Path("pokemonName") pokemonName: String): PokemonDetailsResponse
         @GET("pokemon-species/{speciesName}")
         suspend fun getSpeciesDetails(@Path("speciesName") speciesName: String): PokemonSpecies
+        @GET("evolution-chain/{evolutionID}")
+        suspend fun getEvolutionChain(@Path("evolutionID") evolutionID: String): PokemonEvolutions
     }
 
     private val httpLogTag = "NetworkLogs"
@@ -60,5 +64,8 @@ class PokemonServiceImpl : PokemonService {
 
     override suspend fun getSpeciesDetails(speciesName: String): PokemonSpecies =
         service.getSpeciesDetails(speciesName)
+
+    override suspend fun getEvolutionChain(evolutionID: String): PokemonEvolutions =
+        service.getEvolutionChain(evolutionID)
 
 }
