@@ -10,3 +10,10 @@ data class PokemonDetailsResponse(
     val abilities: List<PokemonAbilities>, val name: String, val types: List<PokemonTypes>,
     val species: PokemonResponseResult, val sprites: PokemonSprites
 )
+
+data class PokemonDetails(
+        var frontSprite: String, val backSprite: String, val name: String, val type: String,
+        val abilities: List<String>, val hiddenAbility: List<String>
+)
+
+data class EvolutionDetails(val sprite: String, var name: String)

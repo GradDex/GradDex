@@ -3,8 +3,12 @@ package com.graddex.graddex
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -23,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusText: TextView
     private lateinit var pokemonRecyclerView: RecyclerView
     private lateinit var pokemonAdapter: PokemonRecyclerAdapter
+    private lateinit var pokemonListContainer: ConstraintLayout
+    private lateinit var pokemonDetailsContainer: FragmentContainerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +37,25 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.status_text)
         pokemonRecyclerView = findViewById(R.id.pokemon_recyclerview)
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
+        pokemonListContainer = findViewById(R.id.pokemon_list)
+        pokemonDetailsContainer = findViewById(R.id.pokemon_details_fragment)
 
-        pokemonAdapter = PokemonRecyclerAdapter { id ->
+        supportFragmentManager.addOnBackStackChangedListener {
+            Log.d(tag, "Back Stack: ${supportFragmentManager.backStackEntryCount}")
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                pokemonDetailsContainer.isVisible = true
+                pokemonListContainer.isVisible = false
+            } else {
+                pokemonDetailsContainer.isVisible = false
+                pokemonListContainer.isVisible = true
+            }
+        }
+
+        pokemonAdapter = PokemonRecyclerAdapter { name: String, url: String ->
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(id))
-                    .addToBackStack(null)
-                    .commit()
+            transaction.add(R.id.pokemon_details_fragment, PokemonDetailsFragment(name, url))
+                .addToBackStack(null)
+                .commit()
         }
         pokemonRecyclerView.adapter = pokemonAdapter
 
@@ -44,16 +63,16 @@ class MainActivity : AppCompatActivity() {
         val cache = Cache(File(application.cacheDir, "http_cache"),
                 50L * 1024L * 1024L)
         val client = OkHttpClient.Builder()
-                .cache(cache)
-                .addInterceptor(ChuckerInterceptor(this))
-                .build()
+            .cache(cache)
+            .addInterceptor(ChuckerInterceptor(this))
+            .build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter: JsonAdapter<PokemonResponse> = moshi.adapter(PokemonResponse::class.java)
 
         // Build the request
         val request = Request.Builder()
-                .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-                .build()
+            .url("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
+            .build()
 
         // Execute the request
         statusText.text = getString(R.string.loading)
