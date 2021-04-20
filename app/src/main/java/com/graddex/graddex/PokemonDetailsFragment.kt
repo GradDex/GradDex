@@ -80,6 +80,9 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             binding.evolvesFrom.visibility = View.VISIBLE
             binding.evolvesFromImage.load(previousEvolutionDetails.sprite)
             binding.evolvesFromName.text = previousEvolutionDetails.name
+            binding.evolvesFromImage.setOnClickListener {
+                viewModel.syncPokemonDetails(previousEvolutionDetails.name)
+            }
         }
 
         viewModel.nextEvolutionDetails.observe(viewLifecycleOwner) { nextEvolutionDetails ->
@@ -87,6 +90,7 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
             binding.evolvesToImage.load(nextEvolutionDetails.sprite)
             binding.evolvesToName.text = nextEvolutionDetails.name
         }
+
     }
 
 }

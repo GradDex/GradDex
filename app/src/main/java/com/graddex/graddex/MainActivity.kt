@@ -3,8 +3,12 @@ package com.graddex.graddex
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -23,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusText: TextView
     private lateinit var pokemonRecyclerView: RecyclerView
     private lateinit var pokemonAdapter: PokemonRecyclerAdapter
+    private lateinit var pokemonListContainer: ConstraintLayout
+    private lateinit var pokemonDetailsContainer: FragmentContainerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,19 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.status_text)
         pokemonRecyclerView = findViewById(R.id.pokemon_recyclerview)
         pokemonRecyclerView.layoutManager = LinearLayoutManager(this)
+        pokemonListContainer = findViewById(R.id.pokemon_list)
+        pokemonDetailsContainer = findViewById(R.id.pokemon_details_fragment)
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            Log.d(tag, "Back Stack: ${supportFragmentManager.backStackEntryCount}")
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                pokemonDetailsContainer.isVisible = true
+                pokemonListContainer.isVisible = false
+            } else {
+                pokemonDetailsContainer.isVisible = false
+                pokemonListContainer.isVisible = true
+            }
+        }
 
         pokemonAdapter = PokemonRecyclerAdapter { name: String, url: String ->
             val transaction = supportFragmentManager.beginTransaction()

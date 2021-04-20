@@ -99,17 +99,15 @@ class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
         }
     }
 
-    private fun nextEvolutionDetails(nextEvolutionName: String) {
-        launch(coroutineContext) {
-            val nextEvoRes = pokemonService.getPokemonDetails(nextEvolutionName)
-            val nextEvolutionSprite = nextEvoRes.sprites.front_default
-            nextEvolutionDetails.postValue(
-                    EvolutionDetails(
-                            sprite = nextEvolutionSprite,
-                            name = nextEvolutionName.capitalize(Locale.ROOT)
-                    )
-            )
-        }
+    private suspend fun nextEvolutionDetails(nextEvolutionName: String) {
+        val nextEvoRes = pokemonService.getPokemonDetails(nextEvolutionName)
+        val nextEvolutionSprite = nextEvoRes.sprites.front_default
+        nextEvolutionDetails.postValue(
+                EvolutionDetails(
+                        sprite = nextEvolutionSprite,
+                        name = nextEvolutionName.capitalize(Locale.ROOT)
+                )
+        )
     }
 
 }
