@@ -13,28 +13,36 @@ import coil.load
 import com.graddex.graddex.R.string.*
 import com.graddex.graddex.models.PokemonDetailsViewModel
 import com.graddex.graddex.databinding.FragmentPokemonDetailsBinding
-import java.util.*
+import kotlin.math.log
 
-private const val pokemonKey: String = "pokemonKey"
+private const val POKEMON_NAME: String = "POKEMON_NAME"
+private const val POKEMON_URL: String = "POKEMON_URL"
 
 class PokemonDetailsFragment(args: Bundle) : Fragment() {
 
-    constructor(id: String) : this(bundleOf(pokemonKey to id))
+    constructor(pokemonName: String, pokemonUrl: String) : this(
+        bundleOf(
+            POKEMON_NAME to pokemonName,
+            POKEMON_URL to pokemonUrl,
+        )
+    )
 
-    private val pokemonId: String = args.getString(pokemonKey, "")
+    private val pokemonName: String = args.getString(POKEMON_NAME, "")
+    private val pokemonUrl: String = args.getString(POKEMON_URL, "")
 
     private lateinit var binding: FragmentPokemonDetailsBinding
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
-        Log.d(tag, "PokemonID: $pokemonId")
+        Log.d(tag, "pokemonName: $pokemonName")
+        Log.d(tag, "pokemonUrl: $pokemonUrl")
 
         // Inflate the Pokemon Details fragment layout
-        binding = DataBindingUtil.inflate<FragmentPokemonDetailsBinding>(
-                inflater, R.layout.fragment_pokemon_details, container, false
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_pokemon_details, container, false
         )
 
         return binding.root
@@ -46,97 +54,41 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
 
         // Call the Pokemon Details view model for specified Pokemon ID
         val viewModel: PokemonDetailsViewModel = ViewModelProvider(this)
-                .get(PokemonDetailsViewModel::class.java)
+            .get(PokemonDetailsViewModel::class.java)
 
         binding.statusText.text = getString(loading)
-        viewModel.syncPokemonDetails(pokemonId)
+        viewModel.syncPokemonDetails(pokemonName)
 
         // Update UI with details
-        viewModel.pokemonSpriteFront.observe(viewLifecycleOwner,
-                { pokemonSpriteFront ->
-                    binding.pokemonFrontImage.load(pokemonSpriteFront)
-                    binding.statusText.visibility = View.GONE
-                })
-
-        viewModel.pokemonSpriteBack.observe(viewLifecycleOwner) { pokemonSpriteBack ->
-            binding.pokemonBackImage.load(pokemonSpriteBack)
+        viewModel.pokemonDetails.observe(viewLifecycleOwner) { pokemonDetails ->
+            binding.statusText.visibility = View.GONE
+            binding.pokemonFrontImage.load(pokemonDetails.frontSprite)
+            binding.pokemonBackImage.load(pokemonDetails.backSprite)
+            binding.pokemonName.text = pokemonDetails.name
+            binding.pokemonTypes.text = pokemonDetails.type
+            binding.pokemonAbilities.text = resources
+                .getQuantityText(R.plurals.abilities, pokemonDetails.abilities.size)
+                .toString()
+                .plus(pokemonDetails.abilities.joinToString(" and "))
+            binding.pokemonHiddenAbility.text = resources
+                .getQuantityText(R.plurals.hidden_abilities, pokemonDetails.hiddenAbility.size)
+                .toString()
+                .plus(pokemonDetails.hiddenAbility.joinToString(" and "))
         }
 
-        viewModel.pokemonName.observe(viewLifecycleOwner) { pokemonName ->
-            binding.pokemonName.text = pokemonName.capitalize(Locale.ROOT)
-
-            viewModel.secondEvolution.observe(viewLifecycleOwner) { secondEvolution ->
-                viewModel.thirdEvolution.observe(viewLifecycleOwner) { thirdEvolution ->
-                    if (thirdEvolution != "No Third Evolution" && thirdEvolution != pokemonName) {
-                        binding.evolvesTo.visibility = View.VISIBLE
-                        if (secondEvolution == pokemonName) {
-                            binding.evolvesToName.text = thirdEvolution.capitalize(Locale.ROOT)
-                            viewModel.thirdEvolutionUrl.observe(viewLifecycleOwner) { thirdEvolutionUrl ->
-                                viewModel.getEvolutionSprites(thirdEvolutionUrl)
-                            }
-                        } else {
-                            binding.evolvesToName.text = secondEvolution.capitalize(Locale.ROOT)
-                            viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
-                                viewModel.getEvolutionSprites(secondEvolutionUrl)
-                            }
-                        }
-                    } else if (thirdEvolution == "No Third Evolution" && secondEvolution != pokemonName) {
-                        binding.evolvesTo.visibility = View.VISIBLE
-                        binding.evolvesToName.text = secondEvolution.capitalize(Locale.ROOT)
-                        viewModel.secondEvolutionUrl.observe(viewLifecycleOwner) { secondEvolutionUrl ->
-                            viewModel.getEvolutionSprites(secondEvolutionUrl)
-                        }
-                    }
-                }
+        viewModel.previousEvolutionDetails.observe(viewLifecycleOwner) { previousEvolutionDetails ->
+            binding.evolvesFrom.visibility = View.VISIBLE
+            binding.evolvesFromImage.load(previousEvolutionDetails.sprite)
+            binding.evolvesFromName.text = previousEvolutionDetails.name
+            binding.evolvesFromImage.setOnClickListener {
+                viewModel.syncPokemonDetails(previousEvolutionDetails.name)
             }
+        }
 
-            viewModel.pokemonTypes.observe(viewLifecycleOwner) { pokemonTypes ->
-                val pokemonTypeList = mutableListOf<String>()
-                for (element in pokemonTypes) {
-                    pokemonTypeList += element.type.name.capitalize(Locale.ROOT)
-                }
-                binding.pokemonTypes.text = pokemonTypeList.joinToString(" | ")
-            }
-
-            viewModel.pokemonAbilities.observe(viewLifecycleOwner) { pokemonAbilities ->
-                val pokemonAbilitiesList = mutableListOf<String>()
-                for (element in pokemonAbilities) {
-                    if (!element.is_hidden) {
-                        pokemonAbilitiesList += element.ability.name.capitalize(Locale.ROOT)
-                    } else {
-                        val pokemonHiddenAbility = element.ability.name.capitalize(Locale.ROOT)
-                        val hiddenAbilityText =
-                                String.format("%s %s", getString(hidden_ability), pokemonHiddenAbility)
-                        binding.pokemonHiddenAbility.text = hiddenAbilityText
-                    }
-                }
-                if (pokemonAbilitiesList.size > 1) {
-                    val pokemonAbilityText = String.format(
-                            "%s %s",
-                            getString(abilities),
-                            pokemonAbilitiesList.joinToString(" and ")
-                    )
-                    binding.pokemonAbilities.text = pokemonAbilityText
-                } else {
-                    val pokemonAbilityText =
-                            String.format("%s %s", getString(ability), pokemonAbilitiesList[0])
-                    binding.pokemonAbilities.text = pokemonAbilityText
-                }
-            }
-
-            viewModel.previousEvolution.observe(viewLifecycleOwner) { previousEvolution ->
-                binding.evolvesFrom.visibility = View.VISIBLE
-                binding.evolvesFromName.text = previousEvolution.capitalize(Locale.ROOT)
-            }
-
-            viewModel.previousEvolutionSprite.observe(viewLifecycleOwner) { previousEvolutionSprite ->
-                binding.evolvesFromImage.load(previousEvolutionSprite)
-            }
-
-            viewModel.evolutionSprite.observe(viewLifecycleOwner) { evolutionSprite ->
-                binding.evolvesToImage.load(evolutionSprite)
-            }
-
+        viewModel.nextEvolutionDetails.observe(viewLifecycleOwner) { nextEvolutionDetails ->
+            binding.evolvesTo.visibility = View.VISIBLE
+            binding.evolvesToImage.load(nextEvolutionDetails.sprite)
+            binding.evolvesToName.text = nextEvolutionDetails.name
         }
 
     }

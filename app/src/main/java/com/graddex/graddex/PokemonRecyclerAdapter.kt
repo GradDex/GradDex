@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.graddex.graddex.models.PokemonResponseResult
 
-class PokemonRecyclerAdapter(val listener: (String) -> Unit)
+class PokemonRecyclerAdapter(val listener: (name: String, url: String) -> Unit)
     : ListAdapter<PokemonResponseResult, PokemonRecyclerAdapter.PokemonViewHolder>(
         object : DiffUtil.ItemCallback<PokemonResponseResult>() {
             override fun areItemsTheSame(
@@ -50,10 +50,8 @@ class PokemonRecyclerAdapter(val listener: (String) -> Unit)
             pokemonUrlNameText.text = item.url
             itemView.setOnClickListener {
                 Log.d("PokemonID", "Pokemon ID: ${item.url}")
-                listener(item.url)
+                listener(item.name, item.url)
             }
-
-
         }
     }
 }

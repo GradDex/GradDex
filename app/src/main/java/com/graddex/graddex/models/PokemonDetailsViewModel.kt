@@ -3,154 +3,111 @@ package com.graddex.graddex.models
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.*
-import java.io.IOException
+import com.graddex.graddex.PokemonService
+import com.graddex.graddex.PokemonServiceImpl
+import kotlinx.coroutines.*
+import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-class PokemonDetailsViewModel : ViewModel() {
+class PokemonDetailsViewModel : ViewModel(), CoroutineScope {
 
-    val pokemonSpriteFront: MutableLiveData<String> = MutableLiveData()
-    val pokemonSpriteBack: MutableLiveData<String> = MutableLiveData()
-    val pokemonName: MutableLiveData<String> = MutableLiveData()
-    val pokemonTypes: MutableLiveData<List<PokemonTypes>> = MutableLiveData()
-    val pokemonAbilities: MutableLiveData<List<PokemonAbilities>> = MutableLiveData()
-    val previousEvolution: MutableLiveData<String> = MutableLiveData()
-    val previousEvolutionSprite: MutableLiveData<String> = MutableLiveData()
-    val secondEvolution: MutableLiveData<String> = MutableLiveData()
-    val secondEvolutionUrl: MutableLiveData<String> = MutableLiveData()
-    val thirdEvolution: MutableLiveData<String> = MutableLiveData()
-    val thirdEvolutionUrl: MutableLiveData<String> = MutableLiveData()
-    val evolutionSprite: MutableLiveData<String> = MutableLiveData()
+    private val coroutineSupervisor = SupervisorJob()
 
-    val tag = "PokeAPI Details"
+    override val coroutineContext: CoroutineContext = Dispatchers.IO + coroutineSupervisor
 
-    // Initialise rest client and implement a JSON adapter
-    private val client = OkHttpClient()
-    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-    val adapter: JsonAdapter<PokemonDetailsResponse> = moshi.adapter(
-            PokemonDetailsResponse::class.java
-    )
-    val speciesAdapter: JsonAdapter<PokemonSpecies> = moshi.adapter(
-            PokemonSpecies::class.java
-    )
-    val evolutionAdapter: JsonAdapter<PokemonEvolutions> = moshi.adapter(
-            PokemonEvolutions::class.java
-    )
+    override fun onCleared() {
+        super.onCleared()
 
-    fun syncPokemonDetails(url: String) {
-
-        // Build the request
-        val request = Request.Builder().url(url).build()
-
-        // Execute the request
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d(tag, "Call Failed")
-            }
-
-            // If request successfully gets a response
-            override fun onResponse(call: Call, response: Response) {
-                Log.d(tag, "Response: $response")
-                val body = response.body?.string()
-                Log.d(tag, "Body: $body")
-                val detailsRes = adapter.fromJson(body ?: "")
-                Log.d(tag, "detailsRes: $detailsRes")
-                pokemonSpriteFront.postValue(detailsRes!!.sprites.front_default)
-                pokemonSpriteBack.postValue(detailsRes.sprites.back_default)
-                pokemonName.postValue(detailsRes.name)
-                pokemonTypes.postValue(detailsRes.types)
-                pokemonAbilities.postValue(detailsRes.abilities)
-
-                Log.d(tag, "Pokemon Species: ${detailsRes.species}")
-                // Build new request for Pokemon species
-                val speciesRequest = Request.Builder().url(detailsRes.species.url).build()
-
-                // Execute the request
-                client.newCall(speciesRequest).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        Log.d(tag, "Pokemon Species Call Failed")
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        val body = response.body?.string()
-                        val speciesRes = speciesAdapter.fromJson(body ?: "")
-                        Log.d(tag, "Pokemon Species Response: $speciesRes")
-
-                        val evolutionChain = speciesRes?.evolution_chain?.url
-                        if (evolutionChain != null) {
-                            if (speciesRes.evolves_from_species != null) {
-                                previousEvolution.postValue(speciesRes.evolves_from_species.name)
-
-                                // Build new request to pull previous evolution's sprite
-                                val previousEvolutionUrl = speciesRes.evolves_from_species.url.replace("-species", "")
-                                val previousEvolutionRequest = Request.Builder().url(previousEvolutionUrl).build()
-
-                                // Execute the request
-                                client.newCall(previousEvolutionRequest).enqueue(object : Callback {
-                                    override fun onFailure(call: Call, e: IOException) {
-                                        Log.d(tag, "Previous Evolution Call Failed")
-                                    }
-
-                                    override fun onResponse(call: Call, response: Response) {
-                                        val body = response.body?.string()
-                                        val previousEvolutionRes = adapter.fromJson(body ?: "")
-                                        previousEvolutionSprite.postValue(previousEvolutionRes!!.sprites.front_default)
-                                    }
-                                })
-                            }
-
-                            // Build new request for Pokemon evolution chain
-                            val evolutionRequest = Request.Builder().url(evolutionChain).build()
-
-                            // Execute the request
-                            client.newCall(evolutionRequest).enqueue(object : Callback {
-                                override fun onFailure(call: Call, e: IOException) {
-                                    Log.d(tag, "Pokemon Evolution Chain Call Failed")
-                                }
-
-                                override fun onResponse(call: Call, response: Response) {
-                                    val body = response.body?.string()
-                                    val evolutionRes = evolutionAdapter.fromJson(body ?: "")
-                                    Log.d(tag, "Evolution Response: $evolutionRes")
-                                    if (evolutionRes!!.chain.evolves_to.isNotEmpty()) {
-                                        val evolutionChain = evolutionRes.chain.evolves_to[0]
-                                        secondEvolution.postValue(evolutionChain!!.species.name)
-                                        secondEvolutionUrl.postValue(evolutionChain.species.url)
-                                        if (evolutionChain.evolves_to.isNotEmpty()) {
-                                            thirdEvolution.postValue(evolutionChain.evolves_to[0]!!.species.name)
-                                            thirdEvolutionUrl.postValue(evolutionChain.evolves_to[0]!!.species.url)
-                                        } else {
-                                            thirdEvolution.postValue("No Third Evolution")
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    }
-                })
-            }
-        })
+        coroutineSupervisor.cancel()
     }
 
-    fun getEvolutionSprites(url: String) {
-        val editedUrl = url.replace("-species", "")
-        // Build the request
-        val request = Request.Builder().url(editedUrl).build()
+    val pokemonDetails = MutableLiveData<PokemonDetails>()
+    val previousEvolutionDetails = MutableLiveData<EvolutionDetails>()
+    val nextEvolutionDetails = MutableLiveData<EvolutionDetails>()
 
-        // Execute the request
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d(tag, "Call Failed")
+    private val tag = "PokeAPI Details"
+
+    private val pokemonService: PokemonService = PokemonServiceImpl()
+
+    fun syncPokemonDetails(pokemonName: String) {
+        launch(coroutineContext) {
+
+            // Get Pokemon Details
+            val detailsRes = pokemonService.getPokemonDetails(pokemonName)
+            val speciesRes = pokemonService.getSpeciesDetails(pokemonName)
+
+            val pokemonSpriteFront = detailsRes!!.sprites.front_default
+            val pokemonSpriteBack = detailsRes.sprites.back_default
+            val pokemonName = detailsRes.name
+            val pokemonTypes = detailsRes.types
+            val pokemonAbilities = detailsRes.abilities
+            val pokemonHiddenAbility = detailsRes.abilities
+
+            pokemonDetails.postValue(
+                    PokemonDetails(
+                            frontSprite = pokemonSpriteFront,
+                            backSprite = pokemonSpriteBack,
+                            name = pokemonName
+                                    .capitalize(Locale.ROOT),
+                            type = pokemonTypes
+                                    .joinToString(" and ") { it.type.name.capitalize(Locale.ROOT) },
+                            abilities = pokemonAbilities
+                                    .filter { !it.is_hidden }
+                                    .map { it.ability.name.capitalize(Locale.ROOT) },
+                            hiddenAbility = pokemonHiddenAbility
+                                    .filter { it.is_hidden }
+                                    .map { it.ability.name.capitalize(Locale.ROOT) }
+                    )
+            )
+
+            // Get previous evolution details
+            if (speciesRes.evolves_from_species != null) {
+                val previousEvolutionName = speciesRes.evolves_from_species.name
+                val previousEvoRes = pokemonService.getPokemonDetails(previousEvolutionName)
+                val previousEvolutionSprite = previousEvoRes.sprites.front_default
+
+                previousEvolutionDetails.postValue(
+                        EvolutionDetails(
+                                sprite = previousEvolutionSprite,
+                                name = previousEvolutionName.capitalize(Locale.ROOT)
+                        )
+                )
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val body = response.body?.string()
-                val res = adapter.fromJson(body ?: "")
-                evolutionSprite.postValue(res!!.sprites.front_default)
+            // Get next evolution details
+            if (speciesRes.evolution_chain != null) {
+                val evolutionID = speciesRes.evolution_chain.url
+                        .toString()
+                        .removePrefix("https://pokeapi.co/api/v2/evolution-chain/")
+                val evolutionRes = pokemonService.getEvolutionChain(evolutionID)
+                Log.d(tag, "Evolution Chain Response: $evolutionRes")
+                // Find second evolution details
+                if (evolutionRes.chain.evolves_to.isNotEmpty()) {
+                    val evolutionChain = evolutionRes.chain.evolves_to[0]
+
+                    // If current Pokemon is first in the evolution chain, pull second evolution
+                    // details. Else, if the current Pokemon is second in the evolution chain,
+                    // check if a third evolution exists and pull details
+                    if (evolutionRes.chain.species.name == pokemonName) {
+                        nextEvolutionDetails(evolutionChain.species.name)
+                    } else if (evolutionChain.species.name == pokemonName &&
+                            evolutionChain.evolves_to.isNotEmpty()) {
+                        nextEvolutionDetails(evolutionChain.evolves_to[0].species.name)
+                    }
+                }
             }
-        })
+        }
+    }
+
+    private suspend fun nextEvolutionDetails(nextEvolutionName: String) {
+        val nextEvoRes = pokemonService.getPokemonDetails(nextEvolutionName)
+        val nextEvolutionSprite = nextEvoRes.sprites.front_default
+        nextEvolutionDetails.postValue(
+                EvolutionDetails(
+                        sprite = nextEvolutionSprite,
+                        name = nextEvolutionName.capitalize(Locale.ROOT)
+                )
+        )
     }
 
 }
