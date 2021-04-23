@@ -41,7 +41,7 @@ class PokemonDetailsFragment(args: Bundle) : Fragment() {
         Log.d(tag, "pokemonUrl: $pokemonUrl")
 
         // Inflate the Pokemon Details fragment layout
-        binding = DataBindingUtil.inflate<FragmentPokemonDetailsBinding>(
+        binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_pokemon_details, container, false
         )
 
